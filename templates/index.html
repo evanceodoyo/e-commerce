@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load cart_filters %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+
+        <div class="col-lg-3">
+
+            <div class="list-group" id="myList">
+                {% for category in categories %}
+                <a href="/?category={{ category.id }}" class="list-group-item text-white" style="background: #343a40">
+                    <i class="fa fa-shopping-cart" style="margin-right: 15px; font-size: 20px;"></i>{{ category.name }}</a>
+                {% endfor %}
+            </div>
+
+
+
+        </div>
+
+        <div id="products" class="col-lg-8">
+            <div class="row mx-auto">
+                {% for product in products %}
+                <div class="card mx-auto mb-4 bg-dark" style="width: 13.5rem;">
+                    <a href="#{{ product.name }}" data-toggle="modal">
+                        <img src="{{ product.image.url }}" class="card-img-top hover_img"></a>
+
+
+                    <div class="modal fade" id="{{ product.name }}">
+                        <div class="modal-dialog" id="popup_modal">
+                            <div class="modal-content text-white bg-dark">
+                                <div class="modal-body">
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <img src="{{ product.image.url }}" height="100%" width="100%">
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <h1>{{ product.name }}</h1>
+                                            
+                                            {% if product.old_price %}
+                                                <h5 class="mt-3 text-warning" style="font-size: 30px; letter-spacing: 2px;">
+                                                    <i class="fas fa-dollar-sign" style="margin-right: 2px; font-size: 26px;">
+                                                    </i><del>{{ product.old_price|currency }}</del></h5>
+                                                <h5 class="mt-3 text-warning" style="font-size: 30px; letter-spacing: 2px;">
+                                                    <i class="fas fa-dollar-sign" style="margin-right: 2px; font-size: 26px;">
+                                                    </i>{{ product.price|currency }} </h5>
+                                            {% else %}
+                                            <h5 class="mt-3 text-warning" style="font-size: 30px; letter-spacing: 2px;">
+                                                <i class="fas fa-dollar-sign" style="margin-right: 2px; font-size: 26px;">
+                                                </i>{{ product.price|currency }} </h5>
+                                            {% endif %}
+                                                
+
+                                            <p class="mt-3 text-justify">{{product.description}}</p>
+                                            
+                                            {% if product.quantity < 1 %}
+                                            <h5 class="mt-3 text-warning" style="font-size: 18px;">Availability: OUT OF STOCK</h5>
+                                            {% else %}                                                
+                                            <h5 class="mt-3 text-warning" style="font-size: 18px;">Availability: IN STOCK</h5>
+                                            {% endif %}
+                                                
+                                            <h5 class="mt-3 text-warning" style="font-size: 18px;">Category: {{ product.category }}</h5>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-warning" data-dismiss="modal">
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="card-body text-white">
+                        <p class="card-title">{{ product.name }}</p>
+                        
+                        {% if product.old_price %}
+                            <p class="card-text"><i class="fas fa-dollar-sign" style="margin-right: 2px; font-size: 15px;"></i><del>{{ product.old_price|currency }}</del></p>
+                            <p class="card-text"><i class="fas fa-dollar-sign" style="margin-right: 2px; font-size: 15px;"></i>{{ product.price|currency }}</p>
+                        {% else %}
+                            <p class="card-text"><i class="fas fa-dollar-sign" style="margin-right: 2px; font-size: 15px;"></i>{{ product.price|currency }}</p>
+                        {% endif %}
+                            
+
+                        <div class="card-footer p-0 no-gutters">
+                            {% if product|is_in_cart:request.session.cart %}
+                            <div class="row no-gutters">
+                                <form action="/" method="post" class="col-lg-2">
+                                    {% csrf_token %}
+                                    <input hidden type="text" value="{{ product.slug }}" name="product">
+                                    <input hidden type="text" value="True" name="remove">
+                                    <input type="submit" value="-" class="col-lg-2 btn btn-dark btn-block">
+                                </form>
+                                <div class=" text-center mt-2 text-white col"> {{ product|quantity_in_cart:request.session.cart }} in Cart</div>
+                                <form action="/" method="post" class="col-lg-2">
+                                    {% csrf_token %}
+                                    <input hidden type="text" value="{{ product.slug }}" name="product">
+                                    <input type="submit" value="+" class="col-lg-2 btn btn-dark btn-block">
+                                </form>
+                            </div>
+
+                            {% else %}
+                            <form action="/" method="post">
+                                {% csrf_token %}
+                                <input hidden type="text" value="{{ product.slug }}" name="product">
+                                <input type="submit" class="btn btn-primary btn-sm" value="Add to Cart">
+                            </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+    
+{% endblock content %}
+    

@@ -1,0 +1,113 @@
+{% load static %}
+{% load cart_filters %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+    {% block title %}    
+    {% if page_title %} {{ page_title }} {% endif %} {% endblock title %} | {{ site_name }}      
+    </title>
+    <meta name="keywords" content="{{ meta_keywords }}">
+    <meta name="description" content="{{ meta_description }}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  
+    <style>
+        a{
+            font-size: 15px;
+        }
+
+        a:hover{
+            transition: transform .6s ease;
+            transform: scale(1.1);
+            text-decoration: none;
+            letter-spacing: 0.5px;
+            font-weight: 700;
+            border: none;
+            color: white;
+            background: #FF0000 !important;
+                }
+        body{
+            background-color: #000000;
+
+        }
+        .hover_img{
+        transition: transform .5s ease;
+        }
+        .hover_img:hover{
+            transform: scale(1.05);
+        }
+        #popup_modal{
+        max-width: 1000px;
+        margin-top: 0px;
+        }
+    </style>
+    <!-- <link rel="stylesheet" href="{% static '/css/style.css' %}"> -->
+</head>
+<body>
+    
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand text-white" style="pointer-events: none;">DukaOnline</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="{% url 'home' %}">Store</a>
+            </li>
+        </ul>
+
+        <ul class="navbar-nav my-2 my-lg-0">
+            <li class="nav-item">
+            <li class="nav-item">
+                <a class="nav-link text-white" href="{% url 'cart' %}">Cart
+                    
+                    {% if request.session.cart.values %}
+                        <span class="badge badge-primary">{{ 0|total_cart_items:request.session.cart.values }}</span>
+                    {% else %}
+                        <span class="badge badge-primary">0</span>                        
+                    {% endif %}
+                        
+                </a>
+            </li>
+            {% if request.session.customer_id %} 
+            <li class="nav-item">
+                <a class="nav-link text-white" href="#" style="pointer-events: none;">{{ request.session.name }}</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white" href="{% url 'orders' %}">Your Orders</a>
+            </li>           
+            <li class="nav-item">
+                <a class="nav-link text-white" href="{% url 'logout' %}">Logout</a>
+            </li>
+            
+            {% else %}    
+            <li class="nav-item">
+                <a class="nav-link text-white" href="{% url 'signup' %}">Signup</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white" href="{% url 'login' %}">Login</a>
+            </li>
+            {% endif %}
+            </ul>
+    </div>
+</nav>
+    
+    {% block content %}
+        
+    {% endblock content %}
+
+<div class="container-fluid bg-dark mt-3">
+    <center><strong><p class="text-white mb-0  ml-4 py-3" style="font-size: 18px;"><i class="fas fa-copyright"></i> 2022 Duka Online Store by Evance Odoyo. All rights reserved.</p></strong></center>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>

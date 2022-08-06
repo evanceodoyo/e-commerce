@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load cart_filters %}
+{% block content %} 
+<div class="container text-white p-4">
+    {% if cart_products %}           
+    <p class="display-5">Your Shopping Cart</p>
+    <hr style="background: white;">
+    <table class="table">
+        <thead>
+        <tr class="bg-primary">
+            <th>S.N</th>
+            <th>Image</th>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Total</th>
+        </tr>
+        </thead>
+        <tbody>
+        
+            
+        {% for product in cart_products %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td><img class="rounded-circle" height="60px" src="{{ product.image.url }}"></td>
+            <td>{{ product.name }}</td>
+            <td>{{ product.price|currency }}</td>
+            <td>{{ product|quantity_in_cart:request.session.cart }}</td>
+            <td>{{ product|total_price:request.session.cart|currency }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+        <tfoot>
+        <th colspan="4"></th>
+        <th>Total</th>
+        <th>{{ cart_products|grand_product_total:request.session.cart|currency }}</th>
+        </tfoot>
+    </table>
+    <hr style="background: white;">
+    <div class="mb-5">
+        <a href="{% url 'checkout' %}" class="btn btn-primary float-right">Checkout</a>
+    </div>
+    {% else %}
+    <p class="display-5 text-warning">Your Shopping Cart is Empty</p>
+    {% endif %}
+</div>
+{% endblock content %}  
+    
